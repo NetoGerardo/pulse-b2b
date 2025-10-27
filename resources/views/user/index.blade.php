@@ -5,7 +5,8 @@
 @endsection
 
 @section('content')
-<div>
-    <corretor-index :origens="{{ json_encode($origens) }}" :planos="{{ json_encode($planos) }}"/>
-</div>
+
+
+<user-index :estados="{{ json_encode($estados) }}" :ultima_campanha="{{ json_encode($ultima_campanha) }}" />
+
 @endsection

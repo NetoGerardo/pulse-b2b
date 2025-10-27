@@ -36,10 +36,29 @@ Route::group(['middleware' => ['role:usuario_consulta']], function () {
 Route::group(['middleware' => ['role:user']], function () {
     Route::prefix('user')->group(function () {
 
+        // CONEXAO
+        Route::get('/conexao', [App\Http\Controllers\Admin\ConexaoController::class, 'index']);
+
+        // PROSPECTS SEARCH
+        Route::post('/prospects/search', [App\Http\Controllers\Admin\ProspectsController::class, 'search']);
+
+        // CAMPANHAS SEARCH
+        Route::post('/campanhas/search', [App\Http\Controllers\User\CampanhasController::class, 'search']);
+
+        // CAMPANHA UPATE STATUS
+        Route::get('/campanhas', [App\Http\Controllers\User\CampanhasController::class, 'index']);
+
+        // CAMPANHA UPATE STATUS
+        Route::post('/campanha/update_status', [App\Http\Controllers\User\CampanhasController::class, 'update_status']);
+
+        // CAMPANHAS
+        Route::post('/campanha/store', [App\Http\Controllers\User\CampanhasController::class, 'store']);
+
+        // CAMPANHAS
+        Route::post('/campanha/delete', [App\Http\Controllers\User\CampanhasController::class, 'delete']);
 
         // BUSCAR LEADS
         Route::post('/leads/search_lista', [App\Http\Controllers\User\LeadsController::class, 'search_lista']);
-
 
         // CONTATOS PRIMEIRA ABERTURA
         Route::post('/contato/primeira_abertura', [App\Http\Controllers\User\ContatoController::class, 'primeira_abertura']);
@@ -130,6 +149,15 @@ Route::group(['middleware' => ['role:user']], function () {
 
 Route::group(['middleware' => ['role:admin']], function () {
     Route::prefix('admin')->group(function () {
+
+        // CAMPANHAS SEARCH
+        Route::post('/campanhas/search', [App\Http\Controllers\Admin\CampanhasController::class, 'search']);
+
+        // CAMPANHAS UPDATE
+        Route::post('/campanha/update', [App\Http\Controllers\Admin\CampanhasController::class, 'update']);
+
+        // CAMPANHAS
+        Route::get('/campanhas', [App\Http\Controllers\Admin\CampanhasController::class, 'index']);
 
         // ORIGENS
         Route::post('/origens/search', [App\Http\Controllers\Admin\OrigemController::class, 'search']);
@@ -435,6 +463,17 @@ Route::group(['middleware' => ['role:admin']], function () {
 
 
 Route::group(['middleware' => ['auth']], function () {
+
+    // ENDEREÇO - BUSCAR CIDADES POR ESTADO
+    Route::post('/endereco/cidades_por_estado', [App\Http\Controllers\EnderecoController::class, 'buscarCidadesPorEstado']);
+
+    // ENDEREÇO - BUSCAR ESTADO POR NOME
+    Route::post('/endereco/estado_por_nome', [App\Http\Controllers\EnderecoController::class, 'buscarEstadoPorNome']);
+
+    // ENDEREÇO - BUSCAR CIDADE POR NOME
+    Route::post('/endereco/cidade_por_nome', [App\Http\Controllers\EnderecoController::class, 'buscarCidadePorNome']);
+
+
     Route::post('/user/tarefa/concluir', [App\Http\Controllers\User\TarefaLeadController::class, 'concluir']);
 
 

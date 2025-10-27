@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Corretor </title>
 
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/icon.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/pulse-round.png') }}">
 
     <link href="{{ asset('/assets/extra-libs/c3/c3.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/assets/libs/chartist/dist/chartist.min.css') }}" rel="stylesheet">
@@ -60,7 +60,7 @@
                             <b class="logo-icon">
                             </b>
                             <span class="logo-text">
-                                <img src="{{ asset('assets/images/martins-logo.png') }}" style="max-width:150px; padding-top: 20px" alt="homepage" class="dark-logo" />
+                                <img src="{{ asset('assets/images/pulse.png') }}" style="max-width:150px; padding-top: 20px" alt="homepage" class="dark-logo" />
                             </span>
                         </a>
                     </div>
@@ -93,42 +93,7 @@
             </nav>
         </header>
 
-        <aside class="left-sidebar" data-sidebarbg="skin6">
-            <div class="scroll-sidebar" data-sidebarbg="skin6">
-                <nav class="sidebar-nav">
-                    <ul id="sidebarnav">
-                        <li class="sidebar-item"> <a class="sidebar-link sidebar-link" href="/user" aria-expanded="false"><i data-feather="home" class="feather-icon"></i><span class="hide-menu">Dashboard</span></a></li>
-                        <li class="list-divider"></li>
-
-                        <li class="nav-small-cap"><span class="hide-menu">Listas</span></li>
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/user/tarefa-lead" aria-expanded="false">
-                                <i class="fa-solid fa-list-check"></i>
-                                <span class="hide-menu">Tarefas </span></a>
-                        </li>
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/user/listas" aria-expanded="false">
-                                <i class="fa-solid fa-arrow-up-from-bracket"></i>
-                                <span class="hide-menu">Pedido de listas </span>
-                            </a>
-                        </li>
-
-
-
-                        <li class="nav-small-cap"><span class="hide-menu">Relatórios</span></li>
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/user/relatorio" aria-expanded="false">
-                                <i class="fa-solid fa-users"></i>
-                                <span class="hide-menu">Minhas listagens </span></a>
-                        </li>
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/user/nao_interessados" aria-expanded="false"><i class="fa fa-users" style="color:red"></i><span class="hide-menu">Não interessados
-                                </span></a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </aside>
+        @include('components.user_backoffice')
 
         <div class="page-wrapper">
             <div class="page-breadcrumb">

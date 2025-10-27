@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ProspectController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,8 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//NEW
 
+
+Route::post('/webhook/prospects', [ProspectController::class, 'store']);
+
+//NEW
 Route::post('/webhook/leads/store', [App\Http\Controllers\Api\LeadsWebhookController::class, 'store']);
 
 Route::post('/webhook/container/store', [App\Http\Controllers\Api\LeadsWebhookController::class, 'storeContainer']);

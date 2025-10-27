@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('chave_api');
             $table->string('url');
             $table->string('url_imagem')->nullable();;
+            $table->string('porta')->nullable();;
             $table->foreignId('user_id')->constrained();
             $table->softDeletes();
         });

@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('logs_fila_leads', function (Blueprint $table) {
+        Schema::create('logs_envios_whatsapp', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('lead_id');
+            $table->unsignedBigInteger('prospect_id');
             $table->string('status')->nullable();
             $table->string('tipo')->nullable();
-            $table->unsignedBigInteger('corretor_id')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('logs_fila_leads');
+        Schema::dropIfExists('logs_envios_whatsapp');
     }
 };

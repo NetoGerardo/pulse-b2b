@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -36,5 +37,28 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function redirectPath()
+    {
+        $user =  Auth::user();
+
+        if ($user->hasRole('admin')) {
+            return '/admin/';
+        }
+
+        if ($user->hasRole('user')) {
+            return '/user/';
+        }
+
+        if ($user->hasRole('admin-indicazap')) {
+            return '/admin-indicazap/';
+        }
+
+        if (method_exists($this, 'redirectTo')) {
+            return $this->redirectTo();
+        }
+
+        return '/';
     }
 }

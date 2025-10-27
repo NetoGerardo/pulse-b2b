@@ -99,6 +99,15 @@ import DadosCardLead from "./components/corretor/DadosCardLead.vue";
 //ADMIN
 import EditUser from "./components/admin//users/Edit.vue";
 
+
+//CAMPANHAS
+import CadastrarCampanha from "./components/user/campanhas/Cadastrar.vue";
+import ListasCampanhas from "./components/user/campanhas/Listar.vue";
+
+import AdminCadastrarCampanha from "./components/admin/campanhas/Cadastrar.vue";
+import AdminEditarCampanha from "./components/admin/campanhas/Editar.vue";
+import AdminListasCampanhas from "./components/admin/campanhas/Listar.vue";
+
 import axios from 'axios';
 import VueAxios from 'vue-axios'
 
@@ -106,6 +115,16 @@ import VueAxios from 'vue-axios'
 const vue = createApp({
     components: {}
 })
+
+
+//WHATSAPP
+import Restart from "./components/whatsapp/restart.vue";
+import EnviarTeste from "./components/whatsapp/EnviarTeste.vue";
+import QrCodeButton from "./components/whatsapp/qrCodeButton.vue";
+import DeleteTokenButton from "./components/whatsapp/deleteTokenButton.vue";
+import ConnectionStatus from "./components/whatsapp/connectionStatus.vue";
+import Load from "./components/whatsapp/Load.vue";
+
 
 // Vuetify
 import "vuetify/styles";
@@ -125,8 +144,27 @@ vue.use(VueClipboard)
 vue.use(VueSweetalert2);
 vue.use(router)
 
+//CAMPANHAS
+vue.component('admin-cadastrar-campanha', AdminCadastrarCampanha)
+vue.component('admin-editar-campanha', AdminEditarCampanha)
+vue.component('admin-listar-campanhas', AdminListasCampanhas)
+
+vue.component('user-cadastrar-campanha', CadastrarCampanha)
+vue.component('user-listar-campanhas', ListasCampanhas)
+
+
+//WHATSAPP
+vue.component('restart-connection', Restart)
+vue.component('delete-token', DeleteTokenButton)
+vue.component('connection-status', ConnectionStatus)
+vue.component('qr-code', QrCodeButton)
+vue.component('load', Load)
+vue.component('enviar-teste', EnviarTeste)
+
+
 
 vue.component('admin-edit-user', EditUser)
+
 
 vue.component('user-tarefas-contato', UserTarefasContato)
 
@@ -186,8 +224,6 @@ vue.component('importar-lista', ImportarLista)
 vue.component('detalhes-proposta', DetalhesProposta)
 vue.component('relatorio-admin-kanban', RelatorioAdminKanban)
 vue.component('leads-rejeitados', Rejeitados)
-
-vue.component('admin-kanban', KanbanAdmin)
 
 vue.mount("#app")
 

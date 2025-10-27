@@ -117,6 +117,17 @@ export default {
             });
         },
 
+        showSuccessMessageWithButtonAndRefresh(tittle, message) {
+            this.$swal.fire({
+                icon: 'success',
+                title: tittle,
+                padding: '1.5em',
+                text: message,
+            }).then(function () {
+                window.location.reload();
+            });
+        },
+
         showErrorMessageWithButtonAndRefresh(tittle, message) {
             this.$swal.fire({
                 icon: 'error',

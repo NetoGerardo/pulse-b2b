@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin</title>
 
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/icon.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/pulse-round.png') }}">
 
     <link href="{{ asset('/assets/extra-libs/c3/c3.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/dist/css/style.min.css') }}" rel="stylesheet">
@@ -51,7 +51,7 @@
                             <b class="logo-icon">
                             </b>
                             <span class="logo-text">
-                                <img src="{{ asset('assets/images/new.png') }}" style="max-width:150px; padding-top: 20px" alt="homepage" class="dark-logo" />
+                                <img src="{{ asset('assets/images/pulse.png') }}" style="max-width:150px; padding-top: 20px" alt="homepage" class="dark-logo" />
                             </span>
                         </a>
                     </div>
@@ -84,64 +84,7 @@
             </nav>
         </header>
 
-        <aside class="left-sidebar" data-sidebarbg="skin6">
-            <div class="scroll-sidebar" data-sidebarbg="skin6">
-                <nav class="sidebar-nav">
-                    <ul id="sidebarnav">
-                        <li class="sidebar-item"> <a class="sidebar-link sidebar-link" href="/admin" aria-expanded="false"><i data-feather="home" class="feather-icon"></i><span class="hide-menu">Indicações</span></a></li>
-                        <li class="list-divider"></li>
-
-                        <li class="nav-small-cap"><span class="hide-menu">Gerenciamento</span></li>
-
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/admin/users/list" aria-expanded="false">
-                                <i class="fa fa-users"></i>
-                                <span class="hide-menu">Usuários </span></a>
-                        </li>
-
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="/admin/tarefas" aria-expanded="false">
-                                <i class="fa-solid fa-list-check"></i>
-                                <span class="hide-menu">Tarefas</span>
-                            </a>
-                        </li>
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/admin/origens" aria-expanded="false">
-                                <i class="fa-brands fa-sourcetree"></i>
-                                <span class="hide-menu">Origens</span></a>
-                        </li>
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/admin/listas" aria-expanded="false">
-                                <i class="fa-solid fa-arrow-up-from-bracket"></i>
-                                <span class="hide-menu">Listas</span></a>
-                        </li>
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/admin/turnos" aria-expanded="false">
-                                <i class="fa-regular fa-clock"></i>
-                                <span class="hide-menu">Turnos</span></a>
-                        </li>
-
-                        <li class="nav-small-cap"><span class="hide-menu">Relatórios</span></li>
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/admin/relatorio/kanban" aria-expanded="false">
-                                <i class="fa-solid fa-clipboard-list"></i>
-                                <span class="hide-menu">Kanban </span></a>
-                        </li>
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/admin/relatorio" aria-expanded="false">
-                                <i class="fa-regular fa-clipboard"></i>
-                                <span class="hide-menu">Indicações </span></a>
-                        </li>
-
-                        <li class="sidebar-item"> <a class="sidebar-link" href="/admin/encaminhadas" aria-expanded="false">
-                                <i class="fa-solid fa-clipboard-user"></i>
-                                <span class="hide-menu">Encaminhadas </span></a>
-                        </li>
-
-                    </ul>
-                </nav>
-            </div>
-        </aside>
+        @include('components.admin_backoffice')
 
         <div class="page-wrapper">
             <div class="page-breadcrumb">
