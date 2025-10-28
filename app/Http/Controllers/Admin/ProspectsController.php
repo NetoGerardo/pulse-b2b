@@ -19,7 +19,32 @@ class ProspectsController extends Controller
     public function search(Request $request)
     {
 
+        $userId = Auth::id();
+
         $query = Prospect::select();
+
+        // 2. Inicia a consulta no Prospect
+        $query = Prospect::query();
+
+        // 3. Usa 'whereHas' para filtrar os prospects COM BASE
+        //    em condições da sua campanha relacionada.
+        $query->whereHas('campanha', function ($q) use ($request, $userId) {
+
+            // CONDIÇÃO OBRIGATÓRIA:
+            // A campanha DEVE pertencer ao usuário logado.
+            $q->where('user_id', $userId);
+
+            // FILTROS OPCIONAIS (agora aplicados com AND)
+            if ($request->nome) {
+                $q->where('nome', 'LIKE', '%' . $request->nome . '%');
+            }
+
+            if ($request->todas_as_etapas) {
+                // Corrigido de orWhere para where.
+                // Agora ele filtra: usuário X E nome Y E todas_as_etapas = 1
+                $q->where('todas_as_etapas', 1);
+            }
+        });
 
         if ($request->nome) {
             $query = $query->where('campanhas.nome', 'LIKE', '%' . $request->nome . '%');

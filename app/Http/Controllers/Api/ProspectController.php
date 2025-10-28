@@ -70,16 +70,19 @@ class ProspectController extends Controller
             // Nome do canal 
             $canal_text = $data['callHistory']['call_mode'] ?? null;
 
-            // 3. Criar o Prospect
-            $prospect = Prospect::create([
-                'campanha_id' => $campanha ? $campanha->id : null, // Salva o ID da campanha ou null
-                'canal_id' => $canal ? $canal->id : null, // Salva o ID da campanha ou null
-                'canal' => $canal_text,
-                'telefone' => $telefone,
-                'dados' => $dadosProspect, // O Model vai converter para JSON
-                'status_ligacao' => $statusLigacao,
-                // 'status_whatsapp' não foi mencionado, ficará null por padrão
-            ]);
+            if ($statusLigacao) {
+                // 3. Criar o Prospect
+                $prospect = Prospect::create([
+                    'campanha_id' => $campanha ? $campanha->id : null, // Salva o ID da campanha ou null
+                    'canal_id' => $canal ? $canal->id : null, // Salva o ID da campanha ou null
+                    'canal' => $canal_text,
+                    'telefone' => $telefone,
+                    'dados' => $dadosProspect, // O Model vai converter para JSON
+                    'status_ligacao' => $statusLigacao,
+                    // 'status_whatsapp' não foi mencionado, ficará null por padrão
+                ]);
+           }
+
 
             return response()->json([
                 'message' => 'Prospect salvo com sucesso!',
