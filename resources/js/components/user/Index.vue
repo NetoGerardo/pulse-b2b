@@ -260,6 +260,7 @@ export default {
 
       setTimeout(() => {
         that.buscarProspects();
+        that.buscarProspectsCanais();
         that.searchForever();
       }, 5000);
     },
