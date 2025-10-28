@@ -84,15 +84,15 @@
             </td>
 
             <td>
-              {{ canal.total_prospects }}
-            </td>
-
-            <td>
               {{ canal.interessados }}
             </td>
 
             <td>
               {{ canal.nao_interessados }}
+            </td>
+
+            <td>
+              {{ canal.total_prospects }}
             </td>
           </tr>
         </tbody>
