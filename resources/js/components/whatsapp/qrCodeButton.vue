@@ -67,9 +67,7 @@ export default {
       console.log("Carregando QR - Sessão = " + this.container.chave_api);
 
       this.axios
-        .get(
-          process.env.MIX_VUE_APP_ENDPOINT + this.porta + `/load/` + this.container.id + "/" + this.container.chave_api + "/" + this.container.user_id
-        )
+        .get(process.env.MIX_VUE_APP_ENDPOINT + `/load/` + this.container.id + "/" + this.container.chave_api + "/" + this.container.user_id)
         .then((response) => {
           console.log("Resposta do carregamento ");
           console.log(this.porta);

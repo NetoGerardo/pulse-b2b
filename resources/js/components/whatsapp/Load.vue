@@ -4,7 +4,7 @@
     <button class="button" type="button" @click="connect">Conectar</button>
 
     <button class="button" type="button" @click="sendText">Enviar mensagem</button>
-</div>
+  </div>
 </template>
 
 <script>
@@ -40,7 +40,6 @@ export default {
 
     console.log("Load component");
     console.log(this.container);
-
   },
 
   methods: {
@@ -50,11 +49,20 @@ export default {
 
     connect() {
       console.log("Carregando QR - Sessão = " + this.container.chave_api);
-      console.log(this.usuario.porta)
+      console.log(this.usuario.porta);
       this.axios
-        .get(process.env.MIX_VUE_APP_ENDPOINT + `/load/` + this.container.id + "/" + this.container.chave_api + "/" + this.container.chave_api + "/" + this.usuario.id)
+        .get(
+          process.env.MIX_VUE_APP_ENDPOINT +
+            `/load/` +
+            this.container.id +
+            "/" +
+            this.container.chave_api +
+            "/" +
+            this.container.chave_api +
+            "/" +
+            this.usuario.id
+        )
         .then((response) => {
-
           console.log("Resposta do carregamento ");
 
           console.log(response.data);
@@ -75,8 +83,8 @@ export default {
       let data = {
         apiId: this.container.url,
         number: "5584988992898",
-        text: "Hello from WhatsZ!"
-      }
+        text: "Hello from WhatsZ!",
+      };
 
       this.axios
         .post(process.env.MIX_VUE_APP_ENDPOINT + `/send/text`, data)
