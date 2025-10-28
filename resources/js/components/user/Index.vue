@@ -75,6 +75,7 @@
             <th>Interessados</th>
             <th>Não interessados</th>
             <th>Total</th>
+            <th>CPL</th>
           </tr>
         </thead>
         <tbody>
@@ -93,6 +94,12 @@
 
             <td>
               {{ canal.total_prospects }}
+            </td>
+
+            <td>
+              <span v-if="canal.interessados > 0">
+                {{ toCurrency(80 / canal.interessados) }}
+              </span>
             </td>
           </tr>
         </tbody>
@@ -208,11 +215,13 @@
 
 <script>
 import sweetAlert from "../controller/sweetAlert";
+import auxFormatacao from "../controller/auxFormatacao";
+import currencyController from "../controller/currencyController";
 import moment from "moment";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 
 export default {
-  mixins: [sweetAlert, Swal],
+  mixins: [sweetAlert, Swal, auxFormatacao, currencyController],
 
   props: ["estados", "ultima_campanha"],
 
