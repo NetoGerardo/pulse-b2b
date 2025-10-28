@@ -21,25 +21,39 @@ class CanaisController extends Controller
         // Guarda o ID da campanha para usar na sub-query
         $campanha = Campanha::find($request->campanha_id);
 
-        // 1. Busca os canais relacionados (belongsToMany) a esta campanha
-        $canais = $campanha->canais()
+        // Define os status que contam como "interessados"
+        $statusInteresse = ['interessado', 'muito interessado'];
 
-            // 2. Seleciona apenas os campos que queremos do canal
+        // 1. Busca os canais relacionados
+        $canais = $campanha->canais()
+            // 2. Seleciona os campos
             ->select('canais.id', 'canais.nome')
 
-            // 3. Adiciona a contagem de 'prospects' para cada canal
+            // 3. Adiciona as contagens de 'prospects'
             ->withCount([
-                // Carrega a contagem da relação 'prospects' (do model Canal)
-                // e dá o apelido de 'total_prospects'
-                'prospects as total_prospects' => function ($query) use ($campanha) {
 
-                    // 4. AQUI ESTÁ A MÁGICA:
-                    // Filtra a contagem de prospects para incluir
-                    // apenas aqueles que pertencem a ESTA campanha
+                // --- NOVA CONTAGEM: Interessados ---
+                'prospects as interessados' => function ($query) use ($campanha, $statusInteresse) {
+                    $query->where('campanha_id', $campanha->id)
+                        // Filtra apenas pelos status de interesse
+                        ->whereIn('status_ligacao', $statusInteresse);
+                },
+
+                // --- NOVA CONTAGEM: Não Interessados ---
+                'prospects as nao_interessados' => function ($query) use ($campanha, $statusInteresse) {
+                    $query->where('campanha_id', $campanha->id)
+                        // Filtra por todos que NÃO estão na lista de interesse
+                        // (isso inclui nulos e outros status)
+                        ->whereNotIn('status_ligacao', $statusInteresse);
+                },
+
+                // --- (Opcional) Manter o total ---
+                // Você pode remover isso se não precisar mais do total geral
+                'prospects as total_prospects' => function ($query) use ($campanha) {
                     $query->where('campanha_id', $campanha->id);
                 }
-            ])
 
+            ])
             // 5. Executa a query
             ->get();
 

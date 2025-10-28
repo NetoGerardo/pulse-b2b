@@ -72,7 +72,9 @@
         <thead>
           <tr>
             <th>Canal</th>
-            <th>Total de prospects</th>
+            <th>Interessados</th>
+            <th>Não interessados</th>
+            <th>Total</th>
           </tr>
         </thead>
         <tbody>
@@ -83,6 +85,14 @@
 
             <td>
               {{ canal.total_prospects }}
+            </td>
+
+            <td>
+              {{ canal.interessados }}
+            </td>
+
+            <td>
+              {{ canal.nao_interessados }}
             </td>
           </tr>
         </tbody>
