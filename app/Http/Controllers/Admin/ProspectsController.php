@@ -48,8 +48,28 @@ class ProspectsController extends Controller
 
         $query = $query->whereNotNull('prospects.dados');
 
-        if ($request->user_id) {
-            $query = $query->where('campanhas.user_id', '=', $request->user_id);
+        $statusQualificados = ['Interessado', 'Convertido', 'Contratado'];
+
+        // 4. FILTRO DE STATUS (CORRIGIDO)
+        if ($request->status) {
+            if ($request->status == 'Qualificados') {
+                // "Qualificados" parece ser um meta-status (um grupo).
+                // O código original tinha 'Interessado' duplicado.
+                // A forma correta é usar 'whereIn' com todos os status
+                // que você considera como "Qualificados".
+
+                //  AJUSTE ESTA LISTA  com os status reais do seu banco
+
+                $query->whereIn('prospects.status_ligacao', $statusQualificados);
+
+                /* // Alternativa (se 'Qualificados' mapeia APENAS para 'Interessado'):
+            // $query->where('prospects.status', 'Interessado');
+            */
+            } else {
+                // Adicionado este 'else' para tratar qualquer outro status
+                // (ex: 'Novo', 'Perdido') que for passado pelo request.
+                $query->whereNotIn('prospects.status_ligacao', $statusQualificados);
+            }
         }
 
         if ($request->todas_as_etapas) {

@@ -108,6 +108,12 @@
         <div class="card-title" id="name" style="display: flex; align-items: center; justify-content: space-between">
           <h4 style="color: black; margin: 0">Prospects</h4>
 
+          <select class="form-control" style="max-width: 200px" id="user_type" v-model="filtro_status" @change="buscarProspects">
+            <option value="">Todos</option>
+            <option value="Qualificados">Somente qualificados</option>
+            <option value="Desqualificados">Desqualificados</option>
+          </select>
+
           <div class="progress-btn" data-progress-style="fill-back" @click="buscarLotes">
             <div class="btn update-btn">
               <i class="fa-solid fa-arrow-rotate-left"></i>
@@ -212,6 +218,7 @@ export default {
 
   data() {
     return {
+      filtro_status: "",
       cadastrar_campanha: false,
       total_cadastrados: 0,
       indicacoes_recebidas: 0,
@@ -314,6 +321,7 @@ export default {
       let data = {
         inicio: this.inicio,
         tamanho: this.qtd_por_pagina,
+        status: this.filtro_status,
       };
 
       console.log("Buscando prospects");
