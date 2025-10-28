@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('logs_envios_whatsapp', function (Blueprint $table) {
+        Schema::create('canais', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('prospect_id');
-            $table->string('status')->nullable();
-            $table->string('tipo')->nullable();
+            $table->string('nome');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('canais');
     }
 };

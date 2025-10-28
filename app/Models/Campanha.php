@@ -5,6 +5,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Campanha extends Model
@@ -32,6 +34,11 @@ class Campanha extends Model
         'mensagem',
     ];
 
+    public function canais(): BelongsToMany
+    {
+        return $this->belongsToMany(Canal::class, 'canal_campanha');
+    }
+
     public function estado(): BelongsTo
     {
         return $this->belongsTo(Estado::class);
@@ -45,5 +52,11 @@ class Campanha extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function prospects(): HasMany
+    {
+        // O Laravel assume que a chave estrangeira em 'prospects' é 'canal_id'
+        return $this->hasMany(Prospect::class);
     }
 }

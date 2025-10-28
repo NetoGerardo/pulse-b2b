@@ -150,6 +150,15 @@ Route::group(['middleware' => ['role:user']], function () {
 Route::group(['middleware' => ['role:admin']], function () {
     Route::prefix('admin')->group(function () {
 
+        // ADDD CANAL CAMPANHA
+        Route::post('/campanha-canais/add', [App\Http\Controllers\Admin\CampanhasController::class, 'addCanal']);
+
+        // CANAIS SEARCH
+        Route::post('/canais/search', [App\Http\Controllers\Admin\CanaisController::class, 'search']);
+
+        // CANAIS CAMPANHA SEARCH
+        Route::post('/canais_campanha/search', [App\Http\Controllers\Admin\CanaisController::class, 'canais_campanha_search']);
+
         // CAMPANHAS SEARCH
         Route::post('/campanhas/search', [App\Http\Controllers\Admin\CampanhasController::class, 'search']);
 
@@ -463,6 +472,9 @@ Route::group(['middleware' => ['role:admin']], function () {
 
 
 Route::group(['middleware' => ['auth']], function () {
+
+    // PROSPECTS POR CANAIS
+    Route::post('/user/canais/prospects_canais', [App\Http\Controllers\Admin\CanaisController::class, 'prospects_canais']);
 
     // ENDEREÇO - BUSCAR CIDADES POR ESTADO
     Route::post('/endereco/cidades_por_estado', [App\Http\Controllers\EnderecoController::class, 'buscarCidadesPorEstado']);

@@ -377,7 +377,8 @@ export default {
             console.log("getConnection().wpp");
 
             this.axios
-                .get(process.env.MIX_VUE_APP_ENDPOINT + porta + `/sessionStatus/` + url)
+                //.get(process.env.MIX_VUE_APP_ENDPOINT + porta + `/sessionStatus/` + url)
+                .get(process.env.MIX_VUE_APP_ENDPOINT + `/sessionStatus/` + url)
                 .then((response) => {
                     callback(response.data.status);
                 })
@@ -390,7 +391,7 @@ export default {
         async getAllStatus(porta, callback) {
 
             this.axios
-                .get(process.env.MIX_VUE_APP_ENDPOINT + porta + `/get_all_sessions`)
+                .get(process.env.MIX_VUE_APP_ENDPOINT + `/get_all_sessions`)
                 .then((response) => {
                     callback(response.data);
                 })

@@ -54,15 +54,21 @@
 
         var socket = "";
 
-        if (container.porta) {
-            console.log("Connection HTTP");
-            console.log(endpoint + container.porta);
-            socket = io.connect(endpoint + container.porta);
+        //CASO NÃO USE HTTPS
+        if (!endpoint.includes('https')) {
+            if (container.porta) {
+                console.log("Connection HTTP");
+                console.log(endpoint + container.porta);
+                socket = io.connect(endpoint + container.porta);
+            } else {
+                console.log("Connection HTTP");
+                console.log(endpoint + usuario.porta);
+                socket = io.connect(endpoint + usuario.porta);
+            }
         } else {
-
-            console.log("Connection HTTP");
-            console.log(endpoint + usuario.porta);
-            socket = io.connect(endpoint + usuario.porta);
+            console.log("Connection HTTPS");
+            console.log(endpoint);
+            socket = io.connect(endpoint);
         }
 
         $(document).ready(function() {

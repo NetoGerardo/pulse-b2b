@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
 
             $table->unsignedBigInteger('campanha_id')->nullable();
+            $table->unsignedBigInteger('canal_id')->nullable();
             $table->string('canal')->nullable();
             $table->string('telefone')->nullable();
             $table->longText('dados')->nullable();
@@ -27,6 +28,9 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('campanha_id')->references('id')->on('campanhas')
+                ->onUpdate('cascade')->onDelete('cascade');
+
+            $table->foreign('canal_id')->references('id')->on('canais')
                 ->onUpdate('cascade')->onDelete('cascade');
         });
     }

@@ -32,7 +32,7 @@
             <td>
               <div v-if="ultima_campanha.status">
                 <span v-if="ultima_campanha.status == 'Em andamento'" style="color: green">{{ ultima_campanha.status }}</span>
-                <span v-if="ultima_campanha.status == 'Finalizada'">{{ ultima_campanha.status }}</span>
+                <span v-else-if="ultima_campanha.status == 'Finalizada'">{{ ultima_campanha.status }}</span>
                 <span v-else>{{ ultima_campanha.status }}</span>
               </div>
               <span v-else>-</span>
@@ -64,6 +64,35 @@
   </div>
 
   <div class="card">
+    <div class="card-body p-3">
+      <h4 style="color: black">Canais</h4>
+
+      <!-- ÚLTIMA CAMPANHA-->
+      <table class="table table-hover" v-if="prospects_canais">
+        <thead>
+          <tr>
+            <th>Canal</th>
+            <th>Total de prospects</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="canal in prospects_canais" :key="canal.id">
+            <td>
+              {{ canal.nome }}
+            </td>
+
+            <td>
+              {{ canal.total_prospects }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h5 v-else>Nenhuma campanha encontrada...</h5>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="card-body p-0">
       <div class="card-header" style="background-color: white">
         <div class="card-title" id="name" style="display: flex; align-items: center; justify-content: space-between">
@@ -83,7 +112,7 @@
         <thead>
           <tr>
             <th>Nome (Razão Social)</th>
-            <th>Status (Ligação)</th>
+            <th>Qualificação</th>
             <th>Status (Whatsapp)</th>
             <th>Contatos</th>
 
@@ -183,6 +212,7 @@ export default {
       qtd_por_pagina: 25,
       paginas: [],
       pagina_atual: 1,
+      prospects_canais: [],
     };
   },
 
@@ -190,11 +220,31 @@ export default {
     console.log(this.ultima_campanha);
 
     this.buscarProspects();
+    this.buscarProspectsCanais();
 
     this.searchForever();
   },
 
   methods: {
+    buscarProspectsCanais() {
+      let data = {
+        campanha_id: this.ultima_campanha.id,
+      };
+
+      axios
+        .post(`/user/canais/prospects_canais`, data)
+        .then((response) => {
+          this.prospects_canais = response.data.prospects_canais;
+
+          console.log("prospects_canais");
+          console.log(this.prospects_canais);
+        })
+        .catch((error) => {
+          this.showErrorMessageWithButton("Ops..", error.response.data);
+          console.log(error.response.data);
+        });
+    },
+
     searchForever() {
       let that = this;
 
@@ -233,8 +283,8 @@ export default {
       }
 
       if (
-        statusNormalizado.includes("qualificada") ||
-        statusNormalizado.includes("venda") ||
+        statusNormalizado.includes("interessado") ||
+        statusNormalizado.includes("muito interessado") ||
         statusNormalizado.includes("concluída") ||
         statusNormalizado.includes("mensagem enviada")
       ) {

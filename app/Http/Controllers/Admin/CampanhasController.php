@@ -180,4 +180,17 @@ class CampanhasController extends Controller
             "total" => $total,
         ], Response::HTTP_OK);
     }
+
+
+    public function addCanal(Request $request)
+    {
+
+        $campanha = Campanha::find($request->campanha_id);
+        $campanha->canais()->syncWithoutDetaching([$request->canal_id]);
+
+        return response()->json([
+            "success" => true,
+            "msg" => 'Origem adicionada com sucesso!',
+        ], Response::HTTP_OK);
+    }
 }

@@ -149,6 +149,46 @@
         <textarea class="form-control" id="senha" type="senha" v-model="formData.mensagem" autocomplete="senha" rows="5" cols="40" />
       </div>
     </div>
+
+    <div class="col-sm-12">
+      <div class="form-group">
+        <label for="user_type">Adicionar canal</label>
+
+        <div class="input-group mb-3">
+          <select class="form-control" id="user_type" v-model="canal_selecionado">
+            <option v-for="canal in canais" :key="canal.id" :value="canal">
+              {{ canal.nome }}
+            </option>
+          </select>
+          <div class="input-group-prepend">
+            <button type="button" class="btn btn-success" @click="addCanal()">
+              Add
+              <i style="margin-left: 3px" class="nav-icon far fa-plus-square"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <table id="zero_config" class="table table-striped table-bordered no-wrap">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="canal in canais_campanha" :key="canal.id" :value="canal">
+            <td>{{ canal.nome }}</td>
+            <td>
+              <button @click="deletarOrigem(canal)" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#gerenciar-modal">
+                Deletar
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <div class="card-footer" style="width: 100%; margin-top: 20px">
@@ -179,6 +219,9 @@ export default {
     return {
       isLoading: false,
       cidades: "",
+      canais: [],
+      canais_campanha: [],
+      canal_selecionado: "",
     };
   },
 
@@ -271,9 +314,104 @@ export default {
     console.log(this.campanha);
 
     this.buscarCidades();
+    this.buscarCanais();
+    this.buscarCanaisCampanha();
   },
 
   methods: {
+    buscarCanaisCampanha() {
+      let data = {
+        campanha_id: this.campanha.id,
+      };
+
+      console.log(data);
+
+      axios
+        .post(`/admin/canais_campanha/search`, data)
+        .then((response) => {
+          this.canais_campanha = response.data.canais;
+        })
+        .catch((error) => {
+          this.showErrorMessageWithButton("Ops..", error.response.data);
+          console.log(error.response.data);
+        });
+    },
+
+    buscarCanais() {
+      axios
+        .post(`/admin/canais/search`)
+        .then((response) => {
+          this.canais = response.data.canais;
+
+          console.log("Canais");
+          console.log(this.canais);
+        })
+        .catch((error) => {
+          this.showErrorMessageWithButton("Ops..", error.response.data);
+          console.log(error.response.data);
+        });
+    },
+
+    addCanal() {
+      let data = {
+        canal_id: this.canal_selecionado.id,
+        campanha_id: this.campanha.id,
+      };
+
+      console.log(data);
+
+      axios
+        .post(`/admin/campanha-canais/add`, data)
+        .then((response) => {
+          this.showSuccessMessageWithButton("Sucesso", "Canal adicionado com sucesso!");
+          this.buscarCanaisCampanha();
+        })
+        .catch((error) => {
+          console.log(error);
+          this.showErrorMessageWithButton("Ops..", error);
+          console.log(error);
+        });
+    },
+
+    deletarCanal(canal) {
+      let html = "Deseja <b style='font-size:20px; color: red'> Deletar </b> esse canal nesta canal? ";
+
+      this.$swal
+        .fire({
+          title: "Confirmação",
+          html: html,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Sim!",
+          cancelButtonText: "Cancelar",
+        })
+        .then((result) => {
+          if (result.value) {
+            let data = {
+              campanha_id: this.campanha.id,
+              canal_id: canal.id,
+            };
+
+            console.log(origem);
+            console.log(data);
+
+            axios
+              .post(`/admin/user-origens/delete`, data)
+              .then((response) => {
+                this.showSuccessMessageWithButton("Sucesso", "Origem deletada com sucesso!");
+                this.buscarOrigensUsuario();
+              })
+              .catch((error) => {
+                console.log(error);
+                this.showErrorMessageWithButton("Ops..", error);
+                console.log(error);
+              });
+          }
+        });
+    },
+
     buscarProspects() {
       this.isLoading = true;
 
