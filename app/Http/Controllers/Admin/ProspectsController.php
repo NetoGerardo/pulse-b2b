@@ -46,9 +46,7 @@ class ProspectsController extends Controller
             }
         });
 
-        if ($request->nome) {
-            $query = $query->where('campanhas.nome', 'LIKE', '%' . $request->nome . '%');
-        }
+        $query = $query->whereNotNull('prospects.dados');
 
         if ($request->user_id) {
             $query = $query->where('campanhas.user_id', '=', $request->user_id);
