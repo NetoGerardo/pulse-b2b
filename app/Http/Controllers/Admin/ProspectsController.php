@@ -48,6 +48,10 @@ class ProspectsController extends Controller
 
         $query = $query->whereNotNull('prospects.dados');
 
+        if ($request->campanha_id) {
+            $query = $query->where('campanha_id', '=', $request->campanha_id);
+        }
+
         $statusQualificados = ['Interessado', 'Convertido', 'Contratado'];
 
         // 4. FILTRO DE STATUS (CORRIGIDO)

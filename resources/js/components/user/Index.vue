@@ -97,9 +97,7 @@
             </td>
 
             <td>
-              <span v-if="canal.interessados > 0">
-                {{ toCurrency(80 / canal.interessados) }}
-              </span>
+              <span v-if="canal.interessados > 0">R${{ toCurrency(80 / canal.interessados) }}</span>
             </td>
           </tr>
         </tbody>
@@ -152,7 +150,11 @@
 
             <td>
               <span :class="['status-badge', getStatusClass(prospect.status_ligacao)]">
-                {{ prospect.status_ligacao || "N/A" }}
+                <span v-if="prospect.status_ligacao == 'interessado' || prospect.status_ligacao == 'muito interessado'">
+                  {{ prospect.status_ligacao }}
+                </span>
+
+                <span v-else>Sem interesse</span>
               </span>
             </td>
 
@@ -328,6 +330,7 @@ export default {
       this.isLoading = true;
 
       let data = {
+        campanha_id: this.ultima_campanha ? this.ultima_campanha.id : null,
         inicio: this.inicio,
         tamanho: this.qtd_por_pagina,
         status: this.filtro_status,
