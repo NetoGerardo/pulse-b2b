@@ -149,8 +149,8 @@
             <td>{{ prospect.dados["Razao Social"] || "Não informado" }}</td>
 
             <td>
-              <span :class="['status-badge', getStatusClass(prospect.status_ligacao)]">
-                <span v-if="prospect.status_ligacao == 'interessado' || prospect.status_ligacao == 'muito interessado'">
+              <span :class="['status-badge', getStatusClassLigacao(prospect.status_ligacao)]">
+                <span v-if="prospect.status_ligacao.toLowerCase() == 'interessado' || prospect.status_ligacao.toLowerCase() == 'muito interessado'">
                   {{ prospect.status_ligacao }}
                 </span>
 
