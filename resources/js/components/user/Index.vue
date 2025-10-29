@@ -303,6 +303,21 @@ export default {
       return dadosFiltrados;
     },
 
+    getStatusClassLigacao(status) {
+      if (!status) return "status-default";
+
+      if (
+        statusNormalizado.includes("interessado") ||
+        statusNormalizado.includes("muito interessado") ||
+        statusNormalizado.includes("concluída") ||
+        statusNormalizado.includes("mensagem enviada")
+      ) {
+        return "status-sucesso";
+      } else {
+        return "status-falha";
+      }
+    },
+
     getStatusClass(status) {
       if (!status) return "status-default";
 
