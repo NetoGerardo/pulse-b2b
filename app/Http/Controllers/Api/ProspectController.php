@@ -36,6 +36,9 @@ class ProspectController extends Controller
             $campanha = null;
             $canal = null;
 
+            $campaignName = $data['callHistory']['campaign']['name'] ?? null;
+            $agentName =  $campaignName;
+
             if ($agentName) {
                 // 1a. Busca o Canal pelo nome do agente
                 $canal = Canal::where('nome', $agentName)
