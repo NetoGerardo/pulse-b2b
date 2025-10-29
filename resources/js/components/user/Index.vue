@@ -304,6 +304,8 @@ export default {
     },
 
     getStatusClassLigacao(status) {
+      const statusNormalizado = status.toLowerCase();
+
       if (!status) return "status-default";
 
       if (
