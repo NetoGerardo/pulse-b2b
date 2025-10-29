@@ -74,6 +74,7 @@
             <th>Canal</th>
             <th>Interessados</th>
             <th>Não interessados</th>
+            <th>Valor investido</th>
             <th>Total</th>
             <th>CPL</th>
           </tr>
@@ -91,6 +92,8 @@
             <td>
               {{ canal.nao_interessados }}
             </td>
+
+            <td>75</td>
 
             <td>
               {{ canal.total_prospects }}
