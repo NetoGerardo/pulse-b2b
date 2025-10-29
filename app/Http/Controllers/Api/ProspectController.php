@@ -52,6 +52,11 @@ class ProspectController extends Controller
                 }
             }
 
+            $campaignName = $data['callHistory']['campaign']['name'] ?? null;
+
+            Log::info("CAMPANHA encontrada:");
+            Log::info($campaignName);
+
             Log::info("Canal encontrado:");
             Log::info($agentName);
             Log::info($canal);
@@ -81,12 +86,11 @@ class ProspectController extends Controller
                     'status_ligacao' => $statusLigacao,
                     // 'status_whatsapp' não foi mencionado, ficará null por padrão
                 ]);
-           }
+            }
 
 
             return response()->json([
                 'message' => 'Prospect salvo com sucesso!',
-                'data' => $prospect
             ], 201); // 201 Created
 
         } catch (Exception $e) {
