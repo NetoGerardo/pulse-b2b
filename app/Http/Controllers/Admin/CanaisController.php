@@ -24,6 +24,7 @@ class CanaisController extends Controller
         // Define os status que contam como "interessados"
         $statusInteresse = ['interessado', 'muito interessado'];
 
+
         // 1. Busca os canais relacionados
         $canais = $campanha->canais()
             // 2. Seleciona os campos
@@ -32,25 +33,29 @@ class CanaisController extends Controller
             // 3. Adiciona as contagens de 'prospects'
             ->withCount([
 
-                // --- NOVA CONTAGEM: Interessados ---
+                // --- NOVA CONTAGEM: Interessados (SOMENTE HOJE) ---
                 'prospects as interessados' => function ($query) use ($campanha, $statusInteresse) {
                     $query->where('campanha_id', $campanha->id)
                         // Filtra apenas pelos status de interesse
-                        ->whereIn('status_ligacao', $statusInteresse);
+                        ->whereIn('status_ligacao', $statusInteresse)
+                        // <-- ADICIONADO: Filtra apenas prospects criados hoje
+                        ->whereDate('created_at', today());
                 },
 
-                // --- NOVA CONTAGEM: Não Interessados ---
+                // --- NOVA CONTAGEM: Não Interessados (SOMENTE HOJE) ---
                 'prospects as nao_interessados' => function ($query) use ($campanha, $statusInteresse) {
                     $query->where('campanha_id', $campanha->id)
                         // Filtra por todos que NÃO estão na lista de interesse
-                        // (isso inclui nulos e outros status)
-                        ->whereNotIn('status_ligacao', $statusInteresse);
+                        ->whereNotIn('status_ligacao', $statusInteresse)
+                        // <-- ADICIONADO: Filtra apenas prospects criados hoje
+                        ->whereDate('created_at', today());
                 },
 
-                // --- (Opcional) Manter o total ---
-                // Você pode remover isso se não precisar mais do total geral
+                // --- (Opcional) Manter o total (SOMENTE HOJE) ---
                 'prospects as total_prospects' => function ($query) use ($campanha) {
-                    $query->where('campanha_id', $campanha->id);
+                    $query->where('campanha_id', $campanha->id)
+                        // <-- ADICIONADO: Filtra apenas prospects criados hoje
+                        ->whereDate('created_at', today());
                 }
 
             ])
