@@ -211,7 +211,6 @@
             <th>Status (Whatsapp)</th>
             <th>Contatos</th>
             <th>CNPJ</th>
-            <th>Razão Social</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -253,21 +252,6 @@
             <td>
               <span>
                 {{ prospect.cnpj || "—" }}
-              </span>
-            </td>
-
-            <td>
-              <span>
-                {{
-                  cortarString(
-                    extrairDado(prospect, [
-                      "Razão Social", // A forma correta
-                      "Razao Social", // A forma sem acento
-                      "Raz\u00e3o Social", // A forma com escape que você viu
-                    ]),
-                    50
-                  )
-                }}
               </span>
             </td>
 
