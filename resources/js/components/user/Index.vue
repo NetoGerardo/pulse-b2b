@@ -210,8 +210,9 @@
             <th>Qualificação</th>
             <th>Status (Whatsapp)</th>
             <th>Contatos</th>
-
-            <th>Dados Adicionais</th>
+            <th>CNPJ</th>
+            <th>Razão Social</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -249,6 +250,28 @@
               </div>
             </td>
 
+            <td>
+              <span>
+                {{ prospect.cnpj || "—" }}
+              </span>
+            </td>
+
+            <td>
+              <span>
+                {{
+                  cortarString(
+                    extrairDado(prospect, [
+                      "Razão Social", // A forma correta
+                      "Razao Social", // A forma sem acento
+                      "Raz\u00e3o Social", // A forma com escape que você viu
+                    ]),
+                    50
+                  )
+                }}
+              </span>
+            </td>
+
+            <!--
             <td class="coluna-dados">
               <ul v-if="prospect.dados && Object.keys(prospect.dados).length > 0">
                 <li v-for="(valor, chave) in filtrarDados(prospect.dados)" :key="chave">
@@ -257,6 +280,21 @@
                 </li>
               </ul>
               <span v-else>Nenhum dado adicional.</span>
+            </td>
+            -->
+
+            <td>
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="prospect_selecionado = prospect"
+                data-toggle="modal"
+                data-target="#detalhes-modal"
+              >
+                <i class="fa-solid fa-search"></i>
+              </button>
+
+              <button type="button" class="btn btn-primary" @click="copiarDadosProspect(prospect)"><i class="fa-solid fa-copy"></i></button>
             </td>
           </tr>
         </tbody>
@@ -287,6 +325,109 @@
       </ul>
     </div>
   </div>
+
+  <!-- CADASTRAR -->
+  <div class="modal fade" id="detalhes-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form @submit.prevent>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="color: black">&times;</button>
+
+            <div class="data-section">
+              <h4 class="section-title">👤 Dados Principais</h4>
+              <div class="data-grid">
+                <div class="data-item full-width">
+                  <span class="data-label">Razão Social</span>
+                  <span class="data-value">{{ extrairDado(prospect_selecionado, ["Razao Social", "Razão Social", "Raz\u00e3o Social"]) }}</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">CNPJ</span>
+                  <span class="data-value">{{ prospect_selecionado.cnpj || "—" }}</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Telefone</span>
+                  <span class="data-value">{{ prospect_selecionado.telefone || "—" }}</span>
+                </div>
+                <div class="data-item full-width">
+                  <span class="data-label">E-mail</span>
+                  <span class="data-value">{{ extrairDado(prospect_selecionado, ["E-mail"]) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="data-section">
+              <h4 class="section-title">🏢 Localização e Atividade</h4>
+              <div class="data-grid">
+                <div class="data-item">
+                  <span class="data-label">Bairro</span>
+                  <span class="data-value">{{ extrairDado(prospect_selecionado, ["Bairro"]) }}</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Cidade / Município</span>
+                  <span class="data-value">{{ extrairDado(prospect_selecionado, ["Cidade", "Municipio"]) }}</span>
+                </div>
+                <div class="data-item full-width">
+                  <span class="data-label">Atividade Principal (CNAE)</span>
+                  <span class="data-value">
+                    {{ extrairDado(prospect_selecionado, ["Descricao da Atividade Principal", "Texto CNAE Principal"]) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="data-section">
+              <h4 class="section-title">⚖️ Detalhes da Empresa</h4>
+              <div class="data-grid">
+                <div class="data-item">
+                  <span class="data-label">Natureza Jurídica</span>
+                  <span class="data-value">{{ extrairDado(prospect_selecionado, ["Natureza Jurídica", "Natureza Juridica"]) }}</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Porte da Empresa</span>
+                  <span class="data-value">{{ extrairDado(prospect_selecionado, ["Porte da Empresa", "Porte Empresa"]) }}</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Regime Tributário</span>
+                  <span class="data-value">{{ extrairDado(prospect_selecionado, ["Regime Tributário", "Regime Tributario"]) }}</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Faturamento Estimado</span>
+                  <span class="data-value">{{ extrairDado(prospect_selecionado, ["Faturamento Estimado"]) }}</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Colaboradores</span>
+                  <span class="data-value">{{ extrairDado(prospect_selecionado, ["Colaboradores Estimados ", "Colaboradores"]) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="data-section">
+              <h4 class="section-title">📈 Prospecção</h4>
+              <div class="data-grid">
+                <div class="data-item">
+                  <span class="data-label">Status da Ligação</span>
+                  <span class="data-value">{{ prospect_selecionado.status_ligacao || "—" }}</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Canal</span>
+                  <span class="data-value">{{ prospect_selecionado.canal || "—" }}</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Qtd. Vidas</span>
+                  <span class="data-value">{{ prospect_selecionado.vidas || extrairDado(prospect_selecionado, ["vidas"]) }}</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Operadora Ofertada</span>
+                  <span class="data-value">{{ prospect_selecionado.operadora || extrairDado(prospect_selecionado, ["operadora"]) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -303,6 +444,7 @@ export default {
 
   data() {
     return {
+      prospect_selecionado: "",
       filtro_nome_fantasia: "",
       filtro_razao_social: "",
       filtro_cnpj: "",
@@ -322,6 +464,7 @@ export default {
       prospects_canais: [],
       data_inicio: "",
       data_fim: "",
+      prospect_selecionado: "",
     };
   },
 
@@ -343,6 +486,191 @@ export default {
   },
 
   methods: {
+    extrairDado(prospect, chaves, valorPadrao = "—") {
+      let dadosObj = {};
+
+      // 1. Garante que 'chaves' seja sempre um array
+      const chavesParaBuscar = Array.isArray(chaves) ? chaves : [chaves];
+
+      // 2. Processa o campo 'dados' (seja string ou objeto)
+      if (prospect && prospect.dados) {
+        if (typeof prospect.dados === "string") {
+          try {
+            dadosObj = JSON.parse(prospect.dados);
+          } catch (e) {
+            console.error(`Erro ao parsear JSON do prospect.dados:`, e);
+            // 'dadosObj' continua como {}
+          }
+        } else if (typeof prospect.dados === "object" && prospect.dados !== null) {
+          dadosObj = prospect.dados;
+        }
+      }
+
+      // 3. Itera pelas chaves fornecidas e encontra a primeira que existe
+      for (const chave of chavesParaBuscar) {
+        const valor = dadosObj[chave];
+
+        // 4. Verifica se o valor é válido (não é null, undefined ou "")
+        if (valor !== null && valor !== undefined && valor !== "") {
+          return valor; // Retorna o primeiro valor encontrado
+        }
+      }
+
+      // 5. Se o loop terminar, nada foi encontrado
+      return valorPadrao;
+    },
+
+    cortarString(texto, maxCaracteres) {
+      const placeholder = "—";
+      const sufixo = "...";
+
+      // 1. Retorna placeholder se o texto for nulo, indefinido ou vazio
+      if (!texto || typeof texto !== "string" || texto.trim() === "") {
+        return placeholder;
+      }
+
+      // 2. Retorna o texto original se ele já for menor ou igual ao máximo
+      if (texto.length <= maxCaracteres) {
+        return texto;
+      }
+
+      // 3. Caso especial: se o máximo for muito pequeno, apenas corta
+      if (maxCaracteres <= sufixo.length) {
+        return texto.substring(0, maxCaracteres);
+      }
+
+      // 4. Corta a string e adiciona o sufixo "..."
+      return texto.substring(0, maxCaracteres - sufixo.length) + sufixo;
+    },
+
+    formatarTelefone(tel) {
+      if (!tel) return "—";
+
+      // Remove tudo que não for dígito
+      const digitos = tel.replace(/\D/g, "");
+
+      // Caso 1: Formato 55119XXXXXXXX (13 dígitos)
+      if (digitos.length === 13 && digitos.startsWith("55")) {
+        const num = digitos.substring(2); // Remove o '55'
+        const ddd = num.substring(0, 2);
+        const part1 = num.substring(2, 7);
+        const part2 = num.substring(7);
+        return `(${ddd}) ${part1}-${part2}`;
+      }
+
+      // Caso 2: Formato 119XXXXXXXX (11 dígitos, celular)
+      if (digitos.length === 11) {
+        const ddd = digitos.substring(0, 2);
+        const part1 = digitos.substring(2, 7);
+        const part2 = digitos.substring(7);
+        return `(${ddd}) ${part1}-${part2}`;
+      }
+
+      // Caso 3: Formato 11XXXXXXXX (10 dígitos, fixo)
+      if (digitos.length === 10) {
+        const ddd = digitos.substring(0, 2);
+        const part1 = digitos.substring(2, 6);
+        const part2 = digitos.substring(6);
+        return `(${ddd}) ${part1}-${part2}`;
+      }
+
+      // Se não se encaixar em nenhum formato, retorna o original
+      return tel;
+    },
+
+    /**
+     * Recebe um objeto 'prospect' e copia seus dados formatados
+     * para a área de transferência.
+     */
+    async copiarDadosProspect(prospect) {
+      console.log("Dados");
+      console.log(prospect);
+
+      if (!prospect) {
+        console.error("Prospect nulo ou indefinido.");
+        return;
+      }
+
+      let dados = {};
+      try {
+        // Tenta parsear a string JSON que vem do banco
+        if (typeof prospect.dados === "string") {
+          // Se for string, faz o parse
+          dados = JSON.parse(prospect.dados);
+        } else if (typeof prospect.dados === "object" && prospect.dados !== null) {
+          // Se já for objeto, apenas atribui
+          dados = prospect.dados;
+        }
+      } catch (e) {
+        console.error("Erro ao parsear a string JSON de dados:", e);
+        // O método continuará, mas 'dados' estará vazio
+      }
+
+      // --- Helper para checagem de Nulos/Vazios ---
+      // Garante que 'null', 'undefined' ou "" virem '—'
+      const v = (val) => (val === null || val === undefined || val === "" ? "—" : val);
+
+      // --- Mapeamento dos Dados ---
+      // Note o uso das chaves exatas do seu JSON, incluindo espaços no final
+      const razaoSocial = v(dados["Razao Social"]);
+      const cnpj = prospect.cnpj;
+      const telefone = this.formatarTelefone(prospect.telefone);
+      const email = v(dados["E-mail"]);
+
+      const bairro = v(dados["Bairro"]);
+      const cidade = v(dados["Cidade"]);
+      const cnae = v(dados["Texto CNAE Principal"]);
+
+      const natureza = v(dados["Natureza Jurídica"]);
+      const porte = v(dados["Porte Empresa"]);
+      const regime = v(dados["Regime Tributário"]);
+      const faturamento = v(dados["Faturamento Estimado"]);
+      const colaboradores = v(dados["Colaboradores Estimados "]); // Note o espaço
+
+      // --- Dados Faltantes ---
+      // ATENÇÃO: 'Quantidade de vidas' e 'Operadora ofertada' não
+      // estavam no objeto 'prospect' que você forneceu.
+      // Estou usando '—' como placeholder.
+      // Se você tiver esses dados (ex: prospect.vidas), substitua '—' abaixo.
+      const qtdVidas = v(prospect.vidas); // ou '—' se não existir
+      const operadora = v(prospect.operadora); // ou '—' se não existir
+
+      // --- Construção da String Final ---
+      const textoParaCopiar = `👤 *Razão Social*: ${razaoSocial}
+🆔 *CNPJ*: ${cnpj}
+📞 *Telefone*: ${telefone}
+📧 *E-mail*: ${email}
+
+🏢 *Bairro*: ${bairro}
+🏙 *Cidade*: ${cidade}
+🏷 *Atividade Principal (CNAE)*: ${cnae}
+
+⚖ *Natureza Jurídica*: ${natureza}
+🏢 *Porte da Empresa*: ${porte}
+💰 *Regime Tributário*: ${regime}
+💵 *Faturamento Estimado*: ${faturamento}
+👥 *Colaboradores*: ${colaboradores}
+
+👪 *Quantidade de vidas*: ${qtdVidas}
+🏥 *Operadora ofertada*: ${operadora}
+
+📝 *Observação*:
+Não ofertamos preços em nossas campanhas. Apenas confirmamos o interesse de CNPJs em cotar com a operadora informada.
+👉 Sugerimos que dê continuidade ao atendimento e cite a operadora de interesse do cliente para melhor identificação.`;
+
+      // --- Lógica de Copiar ---
+      try {
+        // Usa a API moderna do navegador
+        await navigator.clipboard.writeText(textoParaCopiar);
+
+        // Feedback para o usuário (opcional, mas recomendado)
+        alert("Dados do prospect copiados para a área de transferência!");
+      } catch (err) {
+        console.error("Falha ao copiar dados: ", err);
+        alert("Erro ao copiar os dados. Verifique as permissões do navegador.");
+      }
+    },
+
     formatSelectedDate(date) {
       return moment(date).format("yyyy-MM-DD");
     },
@@ -489,7 +817,7 @@ export default {
         });
     },
 
-        formatDateToSearch(date) {
+    formatDateToSearch(date) {
       return moment(date).format("yyyy-MM-DD 00:00:00");
     },
 
@@ -930,5 +1258,417 @@ export default {
 
 .span-grwy {
   background-color: gray;
+}
+</style>
+
+<style scoped>
+/* O fundo escuro que cobre a tela */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+/* O container branco do modal */
+.modal-content {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+
+  /* Responsividade: ocupa 90% da largura, mas no máximo 700px */
+  width: 90%;
+  max-width: 700px;
+
+  /* Responsividade: ocupa 90% da altura, permitindo scroll */
+  max-height: 90vh;
+}
+
+/* Cabeçalho */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.75rem;
+  font-weight: bold;
+  line-height: 1;
+  color: #888;
+  cursor: pointer;
+  padding: 0;
+}
+.close-btn:hover {
+  color: #000;
+}
+
+/* Corpo - onde os dados ficam (com scroll) */
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto; /* Adiciona scroll se o conteúdo for maior que a altura */
+}
+
+.data-section {
+  margin-bottom: 1.5rem;
+}
+.data-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* Grid de dados (mobile-first: 1 coluna) */
+.data-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem; /* Espaçamento entre os itens */
+}
+
+.data-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.data-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.data-value {
+  font-size: 0.95rem;
+  color: #222;
+  word-break: break-word; /* Quebra palavras longas (ex: emails) */
+}
+
+/* Classe para itens que devem ocupar a largura total */
+.data-item.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Rodapé */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eee;
+  background-color: #f9f9f9;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* Estilos de botão (exemplo) */
+.btn {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btn-secondary {
+  background-color: #e9ecef;
+  color: #333;
+}
+.btn-secondary:hover {
+  background-color: #d1d5da;
+}
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  margin-left: 0.5rem;
+}
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* --- Media Query para Responsividade --- */
+
+/* Em telas maiores (desktop), o grid de dados passa a ter 2 colunas */
+@media (min-width: 600px) {
+  .data-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+</style>
+
+<style scoped>
+/* O fundo escuro que cobre a tela */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+  padding: 1rem; /* Padding para evitar que o modal toque as bordas */
+  overflow-y: auto; /* Permite scrollar o FUNDO se o modal for maior que a tela */
+}
+
+/* O container branco do modal (COM SEU ESTILO DE LARGURA) */
+.modal-content {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  max-height: 95vh; /* Impede que o modal seja maior que a tela */
+  margin: 0; /* Resetamos a margem, pois o flex-center cuida disso */
+  
+  /* --- SEUS ESTILOS DE LARGURA (Desktop-First) --- */
+  
+  /* Default (acima de 1600px) */
+  width: 1500px;
+}
+
+@media screen and (max-width: 1600px) {
+  .modal-content {
+    width: 1350px;
+  }
+}
+
+@media screen and (max-width: 1350px) {
+  .modal-content {
+    width: 1250px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .modal-content {
+    width: 1100px;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .modal-content {
+    width: 1000px;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .modal-content {
+    width: 750px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .modal-content {
+    width: 600px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .modal-content {
+    width: 100%;
+    min-width: 400px; /* Garante uma largura mínima no mobile */
+    max-height: 100vh; /* Permite ocupar a tela toda */
+    height: 100%;
+    border-radius: 0;
+  }
+}
+/* --- FIM DOS SEUS ESTILOS --- */
+
+
+/* Cabeçalho */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.75rem;
+  font-weight: bold;
+  line-height: 1;
+  color: #888;
+  cursor: pointer;
+  padding: 0;
+}
+.close-btn:hover {
+  color: #000;
+}
+
+/* Corpo - onde os dados ficam (com scroll) */
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto; /* Adiciona scroll INTERNO se o conteúdo for maior */
+}
+
+.data-section {
+  margin-bottom: 1.5rem;
+}
+.data-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* --- GRID DE DADOS ATUALIZADO (1, 2 ou 3 colunas) --- */
+.data-grid {
+  display: grid;
+  gap: 1.25rem; /* Um pouco mais de espaço */
+  
+  /* Mobile: 1 coluna (Default) */
+  grid-template-columns: 1fr;
+}
+
+/* Telas Médias (Tablet): 2 colunas */
+@media (min-width: 768px) {
+  .data-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Telas Grandes (Desktop): 3 colunas */
+@media (min-width: 1200px) {
+  .modal-content {
+     /* Garante que o breakpoint de 1100px do seu CSS não conflite */
+     width: 1100px;
+  }
+
+  /* Aplica 3 colunas quando o modal estiver largo */
+  .data-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Aplicando suas larguras maiores */
+@media (min-width: 1201px) {
+  .modal-content {
+    width: 1250px;
+  }
+  .data-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1351px) {
+  .modal-content {
+    width: 1350px;
+  }
+  .data-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1601px) {
+  .modal-content {
+    width: 1500px;
+  }
+  .data-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+.data-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.data-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.data-value {
+  font-size: 0.95rem;
+  color: #222;
+  word-break: break-word; /* Quebra palavras longas */
+}
+
+/* Classe para itens que devem ocupar a largura total */
+.data-item.full-width {
+  grid-column: 1 / -1; /* Ocupa todas as colunas disponíveis (1, 2 ou 3) */
+}
+
+/* Rodapé */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eee;
+  background-color: #f9f9f9;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+/* Estilos de botão (exemplo) */
+.btn {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btn-secondary {
+  background-color: #e9ecef;
+  color: #333;
+}
+.btn-secondary:hover {
+  background-color: #d1d5da;
+}
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  margin-left: 0.5rem;
+}
+.btn-primary:hover {
+  background-color: #0056b3;
 }
 </style>

@@ -82,6 +82,8 @@ class ProspectController extends Controller
             // Nome do canal 
             $canal_text = $data['callHistory']['call_mode'] ?? null;
 
+            $dadosJsonString = json_encode($dadosProspect, JSON_UNESCAPED_UNICODE);
+
             if ($statusLigacao) {
 
                 if (strtolower($statusLigacao) == 'interessado' || strtolower($statusLigacao) == 'muito interessado') {
@@ -96,7 +98,7 @@ class ProspectController extends Controller
                     'canal_id' => $canal ? $canal->id : null, // Salva o ID da campanha ou null
                     'canal' => $canal_text,
                     'telefone' => $telefone,
-                    'dados' => $dadosProspect, // O Model vai converter para JSON
+                    'dados' => $dadosJsonString, // O Model vai converter para JSON
                     'status_ligacao' => $statusLigacao,
                     'cnpj' => $cnpj,
                     // 'status_whatsapp' não foi mencionado, ficará null por padrão
