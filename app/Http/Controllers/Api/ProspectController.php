@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Campanha;
 use App\Models\Canal;
 use App\Models\Prospect;
+use App\Models\ProspectLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log; // Importante para debugar
@@ -72,6 +73,9 @@ class ProspectController extends Controller
             // Dados: json.callHistory.mailing_data.data
             $dadosProspect = $data['callHistory']['mailing_data']['data'] ?? null;
 
+            // Dados: json.callHistory.mailing_data.data
+            $cnpj = $data['callHistory']['mailing_data']['identifier'] ?? null;
+
             // Telefone: json.callHistory.mailing_data.phone
             $telefone = $data['callHistory']['mailing_data']['phone'] ?? null;
 
@@ -79,6 +83,13 @@ class ProspectController extends Controller
             $canal_text = $data['callHistory']['call_mode'] ?? null;
 
             if ($statusLigacao) {
+
+                if (strtolower($statusLigacao) == 'interessado' || strtolower($statusLigacao) == 'muito interessado') {
+                    ProspectLog::create([
+                        'request' => $request->getContent()
+                    ]);
+                }
+
                 // 3. Criar o Prospect
                 $prospect = Prospect::create([
                     'campanha_id' => $campanha ? $campanha->id : null, // Salva o ID da campanha ou null
@@ -87,6 +98,7 @@ class ProspectController extends Controller
                     'telefone' => $telefone,
                     'dados' => $dadosProspect, // O Model vai converter para JSON
                     'status_ligacao' => $statusLigacao,
+                    'cnpj' => $cnpj,
                     // 'status_whatsapp' não foi mencionado, ficará null por padrão
                 ]);
             }

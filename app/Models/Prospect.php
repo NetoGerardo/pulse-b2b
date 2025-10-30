@@ -22,7 +22,8 @@ class Prospect extends Model
         'dados',
         'status_ligacao',
         'status_whatsapp',
-        'canal_id'
+        'canal_id',
+        'cnpj'
     ];
 
     /**

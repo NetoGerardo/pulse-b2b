@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -52,6 +53,41 @@ class ProspectsController extends Controller
             $query = $query->where('campanha_id', '=', $request->campanha_id);
         }
 
+        // FILTRO DE CNPJ (Dentro do JSON)
+        if ($request->data_inicio && $request->data_fim) {
+            $query->whereBetween('prospects.created_at', [$request->data_inicio, $request->data_fim]);
+        }
+
+        // FILTRO DE CNPJ (Dentro do JSON)
+        //if ($request->cnpj) {
+        //$query->where('prospects.dados->CNPJ', 'LIKE', '%' . $request->cnpj . '%');
+        //}
+
+        // FILTRO DE CNPJ (Dentro do JSON)
+        if ($request->cnpj) {
+            $query = $query->where('prospects.cnpj', 'LIKE', '%' . $request->cnpj . '%');
+        }
+
+        // FILTRO DE RAZÃO SOCIAL (Case-insensitive com LIKE)
+        // Usando JSON_EXTRACT para chaves com espaços ("Razao Social")
+        if ($request->razao_social) {
+            $path = '$."Razao Social"'; // O caminho JSON
+            $query->whereRaw(
+                'LOWER(JSON_UNQUOTE(JSON_EXTRACT(prospects.dados, ?))) LIKE ?',
+                [$path, '%' . strtolower($request->razao_social) . '%']
+            );
+        }
+
+        // FILTRO DE NOME FANTASIA (Case-insensitive com LIKE)
+        // Usando JSON_EXTRACT para chaves com espaços ("Nome Fantasia")
+        if ($request->nome_fantasia) { // <- Use o name do seu input aqui
+            $path = '$."Nome Fantasia"'; // O caminho JSON
+            $query->whereRaw(
+                'LOWER(JSON_UNQUOTE(JSON_EXTRACT(prospects.dados, ?))) LIKE ?',
+                [$path, '%' . strtolower($request->nome_fantasia) . '%']
+            );
+        }
+
         $statusQualificados = ['Interessado', 'Convertido', 'Contratado'];
 
         // 4. FILTRO DE STATUS (CORRIGIDO)
@@ -81,6 +117,8 @@ class ProspectsController extends Controller
         }
 
         $total = $query->count();
+
+        Log::info($query->toSql());
 
         $prospects = $query->orderBy('id', 'DESC')
             ->skip($request->inicio)

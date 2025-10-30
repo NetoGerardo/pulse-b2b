@@ -110,17 +110,88 @@
     </div>
   </div>
 
+  <!-- FILTROS -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title">Filtrar prospects</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="user_type">Telefone</label>
+            <input class="form-control" v-model="filtro_telefone" />
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="user_type">Nome fantasia</label>
+            <input class="form-control" v-model="filtro_nome_fantasia" />
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="user_type">Razão Social</label>
+            <input class="form-control" v-model="filtro_razao_social" />
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="user_type">CNPJ</label>
+            <input class="form-control" v-model="filtro_cnpj" />
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="user_type">Status</label>
+          <select class="form-control" v-model="filtro_status" @change="buscarProspects">
+            <option value="">Todos</option>
+            <option value="Qualificados">Somente qualificados</option>
+            <option value="Desqualificados">Desqualificados</option>
+          </select>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="user_type">Campanhas</label>
+          <select class="form-control" v-model="filtro_campanhas" @change="buscarProspects">
+            <option value="">Todas</option>
+            <option value="Atual">Somente atual</option>
+          </select>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="user_type">Data início</label>
+            <input class="form-control" type="date" v-model="data_inicio" />
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="user_type">Data fim</label>
+            <input class="form-control" type="date" v-model="data_fim" />
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <div class="form-group">
+            <button type="button" class="btn btn-primary" @click="buscarProspects()">Buscar</button>
+
+            <button type="button" class="btn btn-default" @click="limparFiltros()" style="margin-left: 15px">Limpar filtros</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-body p-0">
       <div class="card-header" style="background-color: white">
         <div class="card-title" id="name" style="display: flex; align-items: center; justify-content: space-between">
           <h4 style="color: black; margin: 0">Prospects</h4>
-
-          <select class="form-control" style="max-width: 200px" id="user_type" v-model="filtro_status" @change="buscarProspects">
-            <option value="">Todos</option>
-            <option value="Qualificados">Somente qualificados</option>
-            <option value="Desqualificados">Desqualificados</option>
-          </select>
 
           <div class="progress-btn" data-progress-style="fill-back" @click="buscarLotes">
             <div class="btn update-btn">
@@ -232,6 +303,11 @@ export default {
 
   data() {
     return {
+      filtro_nome_fantasia: "",
+      filtro_razao_social: "",
+      filtro_cnpj: "",
+      filtro_telefone: "",
+      filtro_campanhas: "Atual",
       filtro_status: "",
       cadastrar_campanha: false,
       total_cadastrados: 0,
@@ -244,11 +320,21 @@ export default {
       paginas: [],
       pagina_atual: 1,
       prospects_canais: [],
+      data_inicio: "",
+      data_fim: "",
     };
   },
 
   mounted() {
     console.log(this.ultima_campanha);
+
+    //DEFININDO DATA DE HOJE
+    this.data_inicio = new Date();
+    this.data_inicio = this.formatSelectedDate(this.data_inicio);
+
+    //DEFININDO DATA DE HOJE
+    this.data_fim = new Date();
+    this.data_fim = this.formatSelectedDate(this.data_fim);
 
     this.buscarProspects();
     this.buscarProspectsCanais();
@@ -257,6 +343,19 @@ export default {
   },
 
   methods: {
+    formatSelectedDate(date) {
+      return moment(date).format("yyyy-MM-DD");
+    },
+
+    limparFiltros() {
+      this.filtro_nome_fantasia = "";
+      this.filtro_razao_social = "";
+      this.filtro_cnpj = "";
+      this.filtro_telefone = "";
+      this.filtro_campanhas = "Atual";
+      this.filtro_status = "";
+    },
+
     buscarProspectsCanais() {
       let data = {
         campanha_id: this.ultima_campanha.id,
@@ -348,9 +447,20 @@ export default {
 
     buscarProspects() {
       this.isLoading = true;
+      let campanha_id = this.ultima_campanha ? this.ultima_campanha.id : null;
+
+      if (this.filtro_campanhas == "") {
+        campanha_id = null;
+      }
 
       let data = {
-        campanha_id: this.ultima_campanha ? this.ultima_campanha.id : null,
+        data_inicio: this.formatDateToSearch(this.data_inicio),
+        data_fim: this.formatDateToSearchTime(this.data_fim),
+        nome_fantasia: this.filtro_nome_fantasia,
+        razao_social: this.filtro_razao_social,
+        cnpj: this.filtro_cnpj,
+        telefone: this.filtro_telefone,
+        campanha_id: campanha_id,
         inicio: this.inicio,
         tamanho: this.qtd_por_pagina,
         status: this.filtro_status,
@@ -377,6 +487,14 @@ export default {
           this.showErrorMessageWithButtonAndRefresh("Ops..", error.response.data);
           console.log(error.response.data);
         });
+    },
+
+        formatDateToSearch(date) {
+      return moment(date).format("yyyy-MM-DD 00:00:00");
+    },
+
+    formatDateToSearchTime(date) {
+      return moment(date).format("yyyy-MM-DD 23:59:59");
     },
 
     pagination(data) {
