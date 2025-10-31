@@ -590,6 +590,9 @@ export default {
         // O método continuará, mas 'dados' estará vazio
       }
 
+      console.log("Dados");
+      console.log(dados);
+
       // --- Helper para checagem de Nulos/Vazios ---
       // Garante que 'null', 'undefined' ou "" virem '—'
       const v = (val) => (val === null || val === undefined || val === "" ? "—" : val);
@@ -601,15 +604,19 @@ export default {
       const telefone = this.formatarTelefone(prospect.telefone);
       const email = v(dados["E-mail"]);
 
-      const bairro = v(dados["Bairro"]);
-      const cidade = v(dados["Cidade"]);
-      const cnae = v(dados["Texto CNAE Principal"]);
+      const bairro = v(dados["Bairro"]) != "—" ? v(dados["Bairro"]) : v(dados["Bairro"]);
+      const cidade = v(dados["Cidade"]) != "—" ? v(dados["Cidade"]) : v(dados["Municipio"]);
+
+      const cnae = v(dados["Texto CNAE Principal"]) != "—" ? v(dados["Texto CNAE Principal"]) : v(dados["Descricao da Atividade Principal"]);
 
       const natureza = v(dados["Natureza Jurídica"]);
-      const porte = v(dados["Porte Empresa"]);
+      const porte = v(dados["Porte Empresa"]) != "—" ? v(dados["Porte Empresa"]) : v(dados["Porte da Empresa"]);
       const regime = v(dados["Regime Tributário"]);
       const faturamento = v(dados["Faturamento Estimado"]);
       const colaboradores = v(dados["Colaboradores Estimados "]); // Note o espaço
+
+      console.log("porte " + porte);
+      console.log(v(dados["porte"]));
 
       // --- Dados Faltantes ---
       // ATENÇÃO: 'Quantidade de vidas' e 'Operadora ofertada' não
@@ -1434,9 +1441,9 @@ Não ofertamos preços em nossas campanhas. Apenas confirmamos o interesse de CN
   flex-direction: column;
   max-height: 95vh; /* Impede que o modal seja maior que a tela */
   margin: 0; /* Resetamos a margem, pois o flex-center cuida disso */
-  
+
   /* --- SEUS ESTILOS DE LARGURA (Desktop-First) --- */
-  
+
   /* Default (acima de 1600px) */
   width: 1500px;
 }
@@ -1487,7 +1494,6 @@ Não ofertamos preços em nossas campanhas. Apenas confirmamos o interesse de CN
   }
 }
 /* --- FIM DOS SEUS ESTILOS --- */
-
 
 /* Cabeçalho */
 .modal-header {
@@ -1543,7 +1549,7 @@ Não ofertamos preços em nossas campanhas. Apenas confirmamos o interesse de CN
 .data-grid {
   display: grid;
   gap: 1.25rem; /* Um pouco mais de espaço */
-  
+
   /* Mobile: 1 coluna (Default) */
   grid-template-columns: 1fr;
 }
@@ -1558,8 +1564,8 @@ Não ofertamos preços em nossas campanhas. Apenas confirmamos o interesse de CN
 /* Telas Grandes (Desktop): 3 colunas */
 @media (min-width: 1200px) {
   .modal-content {
-     /* Garante que o breakpoint de 1100px do seu CSS não conflite */
-     width: 1100px;
+    /* Garante que o breakpoint de 1100px do seu CSS não conflite */
+    width: 1100px;
   }
 
   /* Aplica 3 colunas quando o modal estiver largo */
@@ -1593,7 +1599,6 @@ Não ofertamos preços em nossas campanhas. Apenas confirmamos o interesse de CN
     grid-template-columns: repeat(3, 1fr);
   }
 }
-
 
 .data-item {
   display: flex;
